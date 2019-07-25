@@ -1,12 +1,14 @@
 require_relative 'player'
 require_relative 'game'
 
-class Board < Player
-	attr_accessor :case
+class Board < Game
+	attr_accessor :case, :player1, :player2
 
 	def initialize
 		@case =  ["1","2","3","4","5","6","7","8","9",]
 		@case1 = ["","","","","","","","",""]
+		@player1 = Player.new(@name1, @team1)
+		@player2 = Player.new(@name2, @team2)
 	end
 
 	def menu
@@ -22,7 +24,7 @@ class Board < Player
 	def input_to_index(input)
     input.to_i - 1 #lorque l'utilisateur va entrer un chiffre entre 1 et 9 il faut enlever 1 car le array commence à 0
   end
-  def move(position, cross='X',round='O') #A chaque coup on remplace l'index du tableau par un croix (token)
+  def move(position, cross='X') #A chaque coup on remplace l'index du tableau par un croix (token)
     @case1[position] = cross
   
   end
@@ -34,13 +36,13 @@ class Board < Player
   end
   def turn
   	turn = 0
-    puts "Choisie un chiffre de 1 à 9 (1 => en haut à gauche)"
+    puts "Choisie un chiffre de 1 à 9"
     spot = gets.strip#on demande à l'utilisateur choisir la case
     spot = input_to_index(spot)#on utilise la methode pour soustraire de 1 afin de faire reference au bon index du tableau
     if valid_move?(spot)#on vérifie si le move est valide
       move(spot, who_turn) #(spot = index du tableau, current_player = 'X' ou 'O')
     elsif !valid_move?(spot) #si invalide on envoit ce message
-      puts "\nENTRE 1 & 9\n\nTRY AGAIN !\n\n"
+      puts "\nLA CASE EST DÉJÀ PRISE OU LE CHIFFRE N'EST PAS ENTRE 1 & 9\n\nTRY AGAIN !\n\n"
     else #si oui on passe au tour suivant
       turn
     end#on montre le board a chaque nouveau tour
@@ -60,7 +62,6 @@ class Board < Player
   def who_turn
   		player = nil
     if turn_count() % 2 == 0 #la team "X" joue tous les tours pairs
-      
       player = 'X'
     else
       player = 'O'#la team "O" joue les tous impairs
